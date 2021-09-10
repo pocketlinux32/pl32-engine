@@ -1,0 +1,34 @@
+#!/bin/sh
+components="pl32-memory pl32-parse"
+ext="c"
+cpl="gcc"
+lib="libpl32"
+
+cd build
+mkdir obj -p
+
+echo "compile-libs build system, v1.0.0\n"
+echo "Current compile directory: $(pwd)"
+echo "Compile mode: $1\n"
+
+case $1 in
+	shared)
+		for i in $components; do
+			echo "Compiling $i component..."
+			$cpl -I../include -c -fPIC ../src/$i.$ext -o obj/$i.o
+		done
+
+		echo "Linking components into $lib.so"
+		$cpl -shared -o "$lib.so" obj/*.o
+		;;
+
+	static)
+		for i in $components; do
+			echo "Compiling $i component (static)..."
+			$cpl -I../include -c ../src/$i.$ext -o obj/$i.o
+		done
+
+		echo "Packaging components into $lib.a..."
+		ar rc "$lib.a" obj/*.o
+		;;
+esac
