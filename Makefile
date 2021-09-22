@@ -12,12 +12,13 @@ init:
 	fi
 
 	mkdir build -p
+	./export-vars
 
 build/*.so: init
-	./compile-libs shared
+	./compile-libs -c ${SHARED_CFG}
 
 build/*.a: init
-	./compile-libs static
+	./compile-libs -c ${STATIC_CFG}
 
 clean:
 	rm -rf build
